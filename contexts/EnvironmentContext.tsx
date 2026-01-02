@@ -159,3 +159,38 @@ export function useEnvironment() {
   return context
 }
 
+/**
+ * Derive environment profile from technical state
+ * This is the state-driven way to get environment profile
+ */
+export function getEnvironmentProfile(
+  domain: string | null,
+  stage?: string | null,
+  complexity?: string
+): EnvironmentProfile {
+  // Map domain to profile
+  const profile = domain && environmentProfiles[domain]
+    ? environmentProfiles[domain]
+    : environmentProfiles.default
+  
+  // Adjust based on stage if provided
+  if (stage === 'deploy' && profile) {
+    return {
+      ...profile,
+      motionSpeed: profile.motionSpeed * 1.2,
+      opacity: Math.min(profile.opacity + 0.1, 0.6),
+    }
+  }
+  
+  // Adjust based on complexity if provided
+  if (complexity === 'complex' && profile) {
+    return {
+      ...profile,
+      blurLevel: profile.blurLevel + 2,
+      grain: Math.min(profile.grain + 0.1, 0.5),
+    }
+  }
+  
+  return profile
+}
+
