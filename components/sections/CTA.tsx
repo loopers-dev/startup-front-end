@@ -34,7 +34,7 @@ export function CTA() {
               }}
               className="text-xl sm:text-2xl text-muted mb-12 max-w-2xl mx-auto"
             >
-              Let's discuss your project and explore how we can help bring your vision to life.
+              Let&apos;s discuss your project and explore how we can help bring your vision to life.
             </motion.p>
             
             <motion.div

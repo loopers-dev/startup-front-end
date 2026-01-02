@@ -28,7 +28,7 @@ export function ScrollReveal({ children, delay = 0, className }: ScrollRevealPro
   const viewportConfig = getScrollViewport()
   const isInView = useInView(ref, { 
     once: viewportConfig.once, 
-    margin: viewportConfig.margin as string,
+    margin: viewportConfig.margin,
     amount: viewportConfig.amount 
   })
 

@@ -102,6 +102,7 @@ export function MediaFrame({
               style={{ objectFit }}
             />
           ) : (
+              // eslint-disable-next-line @next/next/no-img-element
             <img
               src={asset.url}
               alt={asset.alt}

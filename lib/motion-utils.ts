@@ -121,7 +121,11 @@ export function createStaggerContainer(): Variants {
  * Get scroll viewport configuration
  * Respects mobile and accessibility preferences
  */
-export function getScrollViewport() {
+export function getScrollViewport(): {
+  once: boolean
+  margin: '-100px' | '0px'
+  amount: number
+} {
   const reducedMotion = prefersReducedMotion()
   const isMobile = isMobileDevice()
 

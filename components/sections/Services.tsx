@@ -75,11 +75,12 @@ export function Services() {
 
   // Cleanup timeouts on unmount
   useEffect(() => {
+    const timeouts = hoverTimeoutRef.current
     return () => {
-      hoverTimeoutRef.current.forEach((timeout) => {
+      timeouts.forEach((timeout) => {
         clearTimeout(timeout)
       })
-      hoverTimeoutRef.current.clear()
+      timeouts.clear()
     }
   }, [])
 

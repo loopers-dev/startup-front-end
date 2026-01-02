@@ -26,7 +26,7 @@ export function StaggerReveal({ children, className }: StaggerRevealProps) {
   const viewportConfig = getScrollViewport()
   const isInView = useInView(ref, { 
     once: viewportConfig.once, 
-    margin: viewportConfig.margin as string,
+    margin: viewportConfig.margin,
     amount: viewportConfig.amount 
   })
 
