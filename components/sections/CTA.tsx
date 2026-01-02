@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { siteConfig } from '@/config/site'
 import { ScrollReveal } from '@/components/motion/ScrollReveal'
 import { fadeIn } from '@/lib/animations'
+import { motionPresets } from '@/lib/motion-tokens'
 
 export function CTA() {
   return (
@@ -26,15 +27,10 @@ export function CTA() {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
-              variants={{
-                ...fadeIn,
-                visible: {
-                  ...fadeIn.visible,
-                  transition: {
-                    ...fadeIn.visible.transition,
-                    delay: 0.2,
-                  },
-                },
+              variants={fadeIn}
+              transition={{
+                duration: motionPresets.fadeIn.duration,
+                delay: 0.2,
               }}
               className="text-xl sm:text-2xl text-muted mb-12 max-w-2xl mx-auto"
             >
@@ -45,15 +41,10 @@ export function CTA() {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
-              variants={{
-                ...fadeIn,
-                visible: {
-                  ...fadeIn.visible,
-                  transition: {
-                    ...fadeIn.visible.transition,
-                    delay: 0.4,
-                  },
-                },
+              variants={fadeIn}
+              transition={{
+                duration: motionPresets.fadeIn.duration,
+                delay: 0.4,
               }}
               className="flex flex-col sm:flex-row gap-4 justify-center"
             >

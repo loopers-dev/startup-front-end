@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { siteConfig } from '@/config/site'
 import { fadeIn } from '@/lib/animations'
+import { motionPresets } from '@/lib/motion-tokens'
 
 export function Footer() {
   return (
@@ -27,15 +28,10 @@ export function Footer() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            variants={{
-              ...fadeIn,
-              visible: {
-                ...fadeIn.visible,
-                transition: {
-                  ...fadeIn.visible.transition,
-                  delay: 0.1,
-                },
-              },
+            variants={fadeIn}
+            transition={{
+              duration: motionPresets.fadeIn.duration,
+              delay: 0.1,
             }}
           >
             <h4 className="text-sm font-semibold mb-6 uppercase tracking-wider">Navigation</h4>
@@ -71,15 +67,10 @@ export function Footer() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            variants={{
-              ...fadeIn,
-              visible: {
-                ...fadeIn.visible,
-                transition: {
-                  ...fadeIn.visible.transition,
-                  delay: 0.2,
-                },
-              },
+            variants={fadeIn}
+            transition={{
+              duration: motionPresets.fadeIn.duration,
+              delay: 0.2,
             }}
           >
             <h4 className="text-sm font-semibold mb-6 uppercase tracking-wider">Contact</h4>
@@ -100,16 +91,11 @@ export function Footer() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
-          variants={{
-            ...fadeIn,
-            visible: {
-              ...fadeIn.visible,
-              transition: {
-                ...fadeIn.visible.transition,
-                delay: 0.3,
-              },
-            },
-          }}
+          variants={fadeIn}
+            transition={{
+              duration: motionPresets.fadeIn.duration,
+              delay: 0.3,
+            }}
           className="mt-16 pt-8 border-t border-border"
         >
           <p className="text-sm text-muted text-center">
