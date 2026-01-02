@@ -23,8 +23,12 @@ interface StaggerRevealProps {
 
 export function StaggerReveal({ children, className }: StaggerRevealProps) {
   const ref = useRef(null)
-  const viewport = getScrollViewport()
-  const isInView = useInView(ref, viewport)
+  const viewportConfig = getScrollViewport()
+  const isInView = useInView(ref, { 
+    once: viewportConfig.once, 
+    margin: viewportConfig.margin as string,
+    amount: viewportConfig.amount 
+  })
 
   return (
     <motion.div
