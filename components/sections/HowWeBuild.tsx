@@ -97,9 +97,10 @@ export function HowWeBuild() {
       <div className="container mx-auto max-w-7xl relative z-10 px-4 sm:px-6">
         {/* Boot Sequence Panel */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
           className="bg-background/80 backdrop-blur-sm border border-border rounded-lg p-4 sm:p-6 md:p-8 font-mono"
         >
           <div className="text-[10px] sm:text-xs text-muted mb-4">SYSTEM BOOT SEQUENCE</div>

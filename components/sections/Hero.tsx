@@ -41,8 +41,9 @@ export function Hero() {
         <div className="container mx-auto max-w-6xl relative z-10">
           {/* System Label Panel */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
             className="bg-background/80 backdrop-blur-sm border border-border rounded-lg p-8 font-mono mb-8"
           >
             <div className="text-xs text-muted mb-2">SYSTEM IDENTIFIER</div>
@@ -56,9 +57,9 @@ export function Hero() {
 
           {/* System Description Panel */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
             className="bg-background/80 backdrop-blur-sm border border-border rounded-lg p-6 font-mono mb-8"
           >
             <div className="text-xs text-muted mb-3">SYSTEM DESCRIPTION</div>
@@ -70,9 +71,9 @@ export function Hero() {
 
           {/* Action Panel */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
             className="flex flex-col sm:flex-row gap-4 justify-center items-center"
           >
             <Link

@@ -4,39 +4,23 @@
  * GlobalScrollTracker
  * 
  * Tracks scroll progress globally and updates technical state.
+ * Uses simple scroll hook for better performance.
  * Scroll = moving through system layers, increasing complexity.
- * Throttled for performance.
  */
 
-import { useRef, useCallback } from 'react'
-import { useScroll, useMotionValueEvent } from 'framer-motion'
+import { useEffect } from 'react'
+import { useSimpleScroll } from '@/hooks/useSimpleScroll'
 import { useTechnicalState } from '@/contexts/TechnicalStateContext'
 
 export function GlobalScrollTracker() {
   const { setScrollProgress } = useTechnicalState()
-  const { scrollYProgress } = useScroll()
-  const lastUpdateRef = useRef<number>(0)
-  const rafRef = useRef<number | null>(null)
+  const { scrollProgress } = useSimpleScroll()
 
-  // Throttled update function
-  const throttledUpdate = useCallback((latest: number) => {
-    const now = Date.now()
-    if (now - lastUpdateRef.current < 100) { // Throttle to 100ms
-      if (rafRef.current) {
-        cancelAnimationFrame(rafRef.current)
-      }
-      rafRef.current = requestAnimationFrame(() => {
-        setScrollProgress(latest)
-        lastUpdateRef.current = Date.now()
-      })
-      return
-    }
-    setScrollProgress(latest)
-    lastUpdateRef.current = now
-  }, [setScrollProgress])
-
-  // Update scroll progress in technical state - throttled
-  useMotionValueEvent(scrollYProgress, 'change', throttledUpdate)
+  // Update scroll progress in technical state
+  // The hook already handles debouncing, so we can update directly
+  useEffect(() => {
+    setScrollProgress(scrollProgress)
+  }, [scrollProgress, setScrollProgress])
 
   return null
 }

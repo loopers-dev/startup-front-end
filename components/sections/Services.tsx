@@ -106,9 +106,10 @@ export function Services() {
       <div className="container mx-auto max-w-7xl relative z-10">
         {/* Panel Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
           className="mb-12"
         >
           <div className="bg-background/80 backdrop-blur-sm border border-border rounded-lg p-6 font-mono">
@@ -129,10 +130,10 @@ export function Services() {
             return (
               <motion.button
                 key={mode.id}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
+                transition={{ duration: 0.5 }}
                 onClick={(e) => {
                   e.preventDefault()
                   handleModeSelect(mode.code as any)
@@ -182,8 +183,9 @@ export function Services() {
         {/* Active Mode Info Panel */}
         {effectiveState.currentDomain && (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
             className="mt-8 bg-background/80 backdrop-blur-sm border border-border rounded-lg p-6 font-mono"
           >
             <div className="text-xs text-muted mb-2">ACTIVE CONFIGURATION</div>

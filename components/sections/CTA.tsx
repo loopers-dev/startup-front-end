@@ -50,14 +50,14 @@ export function CTA() {
             >
               <a
                 href={`mailto:${siteConfig.contact.email}`}
-                className="group relative px-10 py-5 bg-foreground text-background rounded-full font-medium overflow-hidden transition-all duration-300 hover:scale-105"
+                className="group relative px-10 py-5 bg-foreground text-background rounded-full font-medium overflow-hidden transition-all duration-300"
               >
                 <span className="relative z-10">Contact Us</span>
                 <div className="absolute inset-0 bg-gradient-to-r from-primary to-accent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </a>
               <Link
                 href="#services"
-                className="px-10 py-5 border-2 border-border rounded-full font-medium hover:border-foreground transition-all duration-300 hover:scale-105"
+                className="px-10 py-5 border-2 border-border rounded-full font-medium hover:border-foreground transition-all duration-300"
               >
                 Learn More
               </Link>

@@ -3,31 +3,49 @@
 /**
  * StaggerReveal
  * 
- * Client component that reveals children with staggered animation.
+ * Simplified stagger reveal with opacity-only animations for performance.
  * 
  * Architecture:
- * - Uses motion tokens for consistent stagger timing
- * - Respects prefers-reduced-motion
+ * - Simple opacity stagger (no transforms)
  * - Optimized for performance (animates once)
+ * - Minimal stagger delay to prevent jank
  */
 
 import { motion, useInView } from 'framer-motion'
-import { useRef, ReactNode } from 'react'
-import { createStaggerContainer } from '@/lib/motion-utils'
-import { getScrollViewport } from '@/lib/motion-utils'
+import { useRef, ReactNode, Children } from 'react'
 
 interface StaggerRevealProps {
   children: ReactNode
   className?: string
 }
 
+// Simple fade-in variant for children
+const fadeIn = {
+  hidden: { opacity: 0 },
+  visible: { 
+    opacity: 1,
+    transition: { duration: 0.5 }
+  }
+}
+
+// Container variant with minimal stagger
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1, // Reduced from default to prevent jank
+      delayChildren: 0
+    }
+  }
+}
+
 export function StaggerReveal({ children, className }: StaggerRevealProps) {
   const ref = useRef(null)
-  const viewportConfig = getScrollViewport()
   const isInView = useInView(ref, { 
-    once: viewportConfig.once, 
-    margin: viewportConfig.margin,
-    amount: viewportConfig.amount 
+    once: true,
+    margin: '-10%',
+    amount: 0.2
   })
 
   return (
@@ -35,10 +53,14 @@ export function StaggerReveal({ children, className }: StaggerRevealProps) {
       ref={ref}
       initial="hidden"
       animate={isInView ? 'visible' : 'hidden'}
-      variants={createStaggerContainer()}
+      variants={staggerContainer}
       className={className}
     >
-      {children}
+      {Children.map(children, (child, index) => (
+        <motion.div key={index} variants={fadeIn}>
+          {child}
+        </motion.div>
+      ))}
     </motion.div>
   )
 }

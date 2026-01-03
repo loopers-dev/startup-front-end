@@ -14,20 +14,74 @@
 
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { siteConfig } from '@/config/site'
 import { ThemeToggle } from '@/components/theme/ThemeToggle'
 import { motionDuration, motionEasing } from '@/lib/motion-tokens'
 
+const navSections = [
+  { id: 'services', label: 'Services', href: '#services' },
+  { id: 'process', label: 'Process', href: '#process' },
+  { id: 'team', label: 'Team', href: '#team' },
+  { id: 'contact', label: 'Contact', href: '#contact' },
+]
+
 export function Header() {
   const [scrolled, setScrolled] = useState(false)
+  const [activeSection, setActiveSection] = useState<string | null>(null)
+  const observerRef = useRef<IntersectionObserver | null>(null)
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20)
     }
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
+    
+    // Throttle scroll handler
+    let ticking = false
+    const throttledScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          handleScroll()
+          ticking = false
+        })
+        ticking = true
+      }
+    }
+    
+    window.addEventListener('scroll', throttledScroll, { passive: true })
+    return () => window.removeEventListener('scroll', throttledScroll)
+  }, [])
+
+  // Simple active section detection using IntersectionObserver
+  useEffect(() => {
+    const sections = navSections.map(section => 
+      document.getElementById(section.id.replace('#', ''))
+    ).filter(Boolean) as HTMLElement[]
+
+    if (sections.length === 0) return
+
+    // Simple observer - section is active if it's in the top 30% of viewport
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && entry.intersectionRatio > 0.3) {
+            setActiveSection(entry.target.id)
+          }
+        })
+      },
+      {
+        rootMargin: '-20% 0px -50% 0px',
+        threshold: [0, 0.3, 0.5],
+      }
+    )
+
+    sections.forEach((section) => {
+      observerRef.current?.observe(section)
+    })
+
+    return () => {
+      observerRef.current?.disconnect()
+    }
   }, [])
 
   return (
@@ -52,30 +106,22 @@ export function Header() {
         </Link>
 
         <nav className="hidden md:flex items-center gap-8">
-          <Link
-            href="#services"
-            className="text-sm font-medium text-muted hover:text-foreground transition-colors duration-300"
-          >
-            Services
-          </Link>
-          <Link
-            href="#process"
-            className="text-sm font-medium text-muted hover:text-foreground transition-colors duration-300"
-          >
-            Process
-          </Link>
-          <Link
-            href="#team"
-            className="text-sm font-medium text-muted hover:text-foreground transition-colors duration-300"
-          >
-            Team
-          </Link>
-          <Link
-            href="#contact"
-            className="text-sm font-medium text-muted hover:text-foreground transition-colors duration-300"
-          >
-            Contact
-          </Link>
+          {navSections.map((section) => {
+            const isActive = activeSection === section.id.replace('#', '')
+            return (
+              <Link
+                key={section.id}
+                href={section.href}
+                className={`text-sm font-medium transition-colors duration-300 ${
+                  isActive
+                    ? 'text-foreground'
+                    : 'text-muted hover:text-foreground'
+                }`}
+              >
+                {section.label}
+              </Link>
+            )
+          })}
           <ThemeToggle />
         </nav>
 

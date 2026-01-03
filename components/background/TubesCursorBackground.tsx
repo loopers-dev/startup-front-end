@@ -16,6 +16,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { prefersReducedMotion } from '@/lib/motion-utils'
 import { getThemePreference } from '@/lib/theme'
+import { useSimpleScroll } from '@/hooks/useSimpleScroll'
 
 interface TubesCursorBackgroundProps {
   enabled?: boolean
@@ -41,6 +42,11 @@ export function TubesCursorBackground({
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const appRef = useRef<any>(null)
   const [theme, setTheme] = useState<'light' | 'dark'>('light')
+    const { scrollProgress } = useSimpleScroll()
+    const lastScrollProgressRef = useRef(0)
+    const fpsRef = useRef<number[]>([])
+    const lastFrameTimeRef = useRef(performance.now())
+    const performanceModeRef = useRef<'normal' | 'reduced'>('normal')
   
   // Detect theme changes
   useEffect(() => {
@@ -156,12 +162,17 @@ export function TubesCursorBackground({
         // Adjust intensity based on theme (much lower for light theme for subtlety)
         const intensity = theme === 'dark' ? 200 : 100
 
-        // Initialize TubesCursor
+          // Performance mode detection - check if device is low-end
+          const isLowEndDevice =
+              navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4 ||
+              (navigator as any).deviceMemory && (navigator as any).deviceMemory < 4
+
+          // Initialize TubesCursor with performance-aware settings
         const app = TubesCursor(canvas, {
           tubes: {
             colors: currentColors,
             lights: {
-              intensity,
+                intensity: isLowEndDevice ? intensity * 0.7 : intensity,
               colors: currentLightColors,
             },
           },
@@ -169,9 +180,10 @@ export function TubesCursorBackground({
         
         // Ensure cursor tracking is enabled
         // TubesCursor should automatically track cursor, but we can verify
-        console.log('TubesCursor initialized with theme:', theme, 'colors:', currentColors)
+          console.log('TubesCursor initialized with theme:', theme, 'colors:', currentColors, 'performance mode:', isLowEndDevice ? 'reduced' : 'normal')
 
         appRef.current = app
+          performanceModeRef.current = isLowEndDevice ? 'reduced' : 'normal'
         console.log('TubesCursor initialized successfully')
 
         // Handle window resize
@@ -205,19 +217,53 @@ export function TubesCursorBackground({
           }
         }
         
-        // Track mouse position for gradient overlay in light mode
+          // Track mouse position for gradient overlay in light mode (throttled)
+          let mouseUpdateRaf: number | null = null
         const updateMousePosition = (e: MouseEvent) => {
-          if (theme === 'light') {
-            document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`)
-            document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`)
+            if (theme === 'light' && !mouseUpdateRaf) {
+                mouseUpdateRaf = requestAnimationFrame(() => {
+                    document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`)
+                    document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`)
+                    mouseUpdateRaf = null
+                })
           }
-        }
-          document.addEventListener('mousemove', updateMousePosition)
+          }
+          document.addEventListener('mousemove', updateMousePosition, { passive: true })
+
+          // FPS monitoring (development only)
+          let fpsCheckInterval: NodeJS.Timeout | null = null
+          if (process.env.NODE_ENV === 'development') {
+              fpsCheckInterval = setInterval(() => {
+                  const now = performance.now()
+                  const delta = now - lastFrameTimeRef.current
+                  const fps = 1000 / delta
+
+                  fpsRef.current.push(fps)
+                  if (fpsRef.current.length > 60) {
+                      fpsRef.current.shift()
+                  }
+
+                  const avgFps = fpsRef.current.reduce((a, b) => a + b, 0) / fpsRef.current.length
+
+                  if (avgFps < 30 && performanceModeRef.current === 'normal') {
+                      console.warn('[TubesCursor] Performance warning: FPS < 30. Consider reducing effects.')
+                      performanceModeRef.current = 'reduced'
+                  }
+
+                  lastFrameTimeRef.current = now
+              }, 1000)
+          }
 
         // Cleanup handlers
         return () => {
           window.removeEventListener('resize', handleResize)
             document.removeEventListener('mousemove', updateMousePosition)
+            if (mouseUpdateRaf) {
+                cancelAnimationFrame(mouseUpdateRaf)
+            }
+            if (fpsCheckInterval) {
+                clearInterval(fpsCheckInterval)
+            }
         }
       } catch (error) {
         console.warn('Failed to initialize TubesCursor:', error)
@@ -244,6 +290,27 @@ export function TubesCursorBackground({
       }
     }
   }, [enabled, interactive, colors, lightColors, theme])
+
+    // Handle scroll-based color changes (only on major section changes - 25% increments)
+    useEffect(() => {
+        if (!appRef.current || !enabled) return
+
+        const scrollSection = Math.floor(scrollProgress * 4) // 0, 1, 2, 3, 4
+        const lastScrollSection = Math.floor(lastScrollProgressRef.current * 4)
+
+        // Only update colors when crossing major section boundaries (25% increments)
+        if (scrollSection !== lastScrollSection) {
+            // Use CSS filter for brightness adjustment instead of redrawing
+            // This is much more performant than changing colors
+            const brightness = 1 - (scrollProgress * 0.2) // Slight darkening as you scroll
+
+            if (canvasRef.current) {
+                canvasRef.current.style.filter = `brightness(${Math.max(0.8, brightness)})`
+            }
+
+            lastScrollProgressRef.current = scrollProgress
+        }
+    }, [scrollProgress, enabled])
 
   if (!enabled || prefersReducedMotion()) {
     return null

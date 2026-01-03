@@ -3,7 +3,12 @@
 import { motion } from 'framer-motion'
 import { ScrollReveal } from '@/components/motion/ScrollReveal'
 import { StaggerReveal } from '@/components/motion/StaggerReveal'
-import { scaleIn } from '@/lib/animations'
+
+// Simple fade-in variant for performance
+const fadeIn = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 0.5 } }
+}
 
 const teamRoles = [
   {
@@ -44,8 +49,7 @@ export function Team() {
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, margin: '-100px' }}
-                variants={scaleIn}
-                whileHover={{ y: -8 }}
+                variants={fadeIn}
                 className="p-8 rounded-2xl border border-border bg-background hover:border-foreground/20 transition-all duration-300 text-center"
               >
                 <h3 className="text-2xl font-semibold mb-4">{member.role}</h3>
