@@ -12,10 +12,14 @@ import { CTA } from '@/components/sections/CTA'
 import { EnvironmentBackground } from '@/components/media/EnvironmentBackground'
 import { SystemCanvas } from '@/components/system/SystemCanvas'
 import { GlobalScrollTracker } from '@/components/system/GlobalScrollTracker'
+import { TubesCursorBackground } from '@/components/background/TubesCursorBackground'
 
 export default function Home() {
   return (
     <main className="min-h-screen relative">
+      {/* Tubes Cursor Background - interactive 3D effect (lowest layer) */}
+      <TubesCursorBackground />
+      
       {/* Global System Canvas - persistent, never unmounts */}
       <SystemCanvas />
       
