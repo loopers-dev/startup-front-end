@@ -18,21 +18,18 @@ import Link from 'next/link'
 import { motion, useInView } from 'framer-motion'
 import { siteConfig } from '@/config/site'
 import { useTechnicalState } from '@/contexts/TechnicalStateContext'
-import { useEnvironment } from '@/contexts/EnvironmentContext'
 
 export function Hero() {
   const { setActiveSection } = useTechnicalState()
-  const { setEnvironment } = useEnvironment()
   const sectionRef = useRef<HTMLElement>(null)
   const isInView = useInView(sectionRef, { margin: '-20%', once: false })
   
-  // Claim visual ownership and set default environment
+  // Claim visual ownership
   useEffect(() => {
     if (isInView) {
       setActiveSection('hero')
-      setEnvironment(null) // Default environment
     }
-  }, [isInView, setActiveSection, setEnvironment])
+  }, [isInView, setActiveSection])
 
   return (
     <section

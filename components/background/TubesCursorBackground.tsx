@@ -45,24 +45,31 @@ export function TubesCursorBackground({
   // Detect theme changes
   useEffect(() => {
     const updateTheme = () => {
-      setTheme(getThemePreference())
+        const currentTheme = getThemePreference()
+        setTheme(currentTheme)
     }
     
+      // Initial theme detection
     updateTheme()
     
-    // Watch for theme changes
+      // Watch for theme changes via class changes
     const observer = new MutationObserver(updateTheme)
     observer.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ['class'],
     })
     
-    // Also listen to storage changes
+      // Also listen to storage changes (if theme is changed in another tab)
     window.addEventListener('storage', updateTheme)
     
+      // Listen for custom theme change events
+      const handleThemeChange = () => updateTheme()
+      window.addEventListener('themechange', handleThemeChange)
+
     return () => {
       observer.disconnect()
       window.removeEventListener('storage', updateTheme)
+        window.removeEventListener('themechange', handleThemeChange)
     }
   }, [])
   
@@ -188,15 +195,13 @@ export function TubesCursorBackground({
           document.body.addEventListener('click', handleClick)
         }
         
-        // Update colors when theme changes
+          // Update colors when theme changes (will be called when theme state changes)
         const updateColors = () => {
           if (app && app.tubes) {
             const currentColors = getColors()
             const currentLightColors = getLightColors()
             app.tubes.setColors(currentColors)
-            app.tubes.setLightsColors(currentLightColors)
-            // Note: intensity might not be changeable after init, but colors can be
-            // Canvas opacity will be handled by React state
+              app.tubes.setLightsColors(currentLightColors)
           }
         }
         
@@ -207,26 +212,12 @@ export function TubesCursorBackground({
             document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`)
           }
         }
-        document.addEventListener('mousemove', updateMousePosition)
-        
-        // Listen for theme changes
-        const themeObserver = new MutationObserver(() => {
-          const newTheme = getThemePreference()
-          if (newTheme !== theme) {
-            setTheme(newTheme)
-            updateColors()
-          }
-        })
-        themeObserver.observe(document.documentElement, {
-          attributes: true,
-          attributeFilter: ['class'],
-        })
+          document.addEventListener('mousemove', updateMousePosition)
 
         // Cleanup handlers
         return () => {
           window.removeEventListener('resize', handleResize)
-          document.removeEventListener('mousemove', updateMousePosition)
-          themeObserver.disconnect()
+            document.removeEventListener('mousemove', updateMousePosition)
         }
       } catch (error) {
         console.warn('Failed to initialize TubesCursor:', error)

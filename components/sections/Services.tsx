@@ -18,7 +18,6 @@
 import { useEffect, useRef, useCallback } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { useTechnicalState, useEffectiveTechnicalState } from '@/contexts/TechnicalStateContext'
-import { useEnvironment } from '@/contexts/EnvironmentContext'
 
 const systemModes = [
   {
@@ -53,7 +52,6 @@ const systemModes = [
 
 export function Services() {
   const { setDomain, setActiveSection } = useTechnicalState()
-  const { setEnvironment } = useEnvironment()
   const effectiveState = useEffectiveTechnicalState()
   const sectionRef = useRef<HTMLElement>(null)
   const isInView = useInView(sectionRef, { margin: '-20%', once: false })
@@ -65,13 +63,6 @@ export function Services() {
       setActiveSection('services')
     }
   }, [isInView, setActiveSection])
-
-  // Update environment when domain changes
-  useEffect(() => {
-    if (effectiveState.currentDomain) {
-      setEnvironment(effectiveState.currentDomain)
-    }
-  }, [effectiveState.currentDomain, setEnvironment])
 
   // Cleanup timeouts on unmount
   useEffect(() => {

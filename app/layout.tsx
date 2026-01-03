@@ -4,9 +4,7 @@ import './globals.css'
 import { siteConfig } from '@/config/site'
 import { ThemeProvider } from '@/components/theme/ThemeProvider'
 import { SmoothScrollProvider } from '@/components/motion/SmoothScrollProvider'
-import { MediaProvider } from '@/contexts/MediaContext'
 import { TechnicalStateProvider } from '@/contexts/TechnicalStateContext'
-import { EnvironmentProvider } from '@/contexts/EnvironmentContext'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -68,15 +66,11 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning className={inter.variable}>
       <body className="font-sans antialiased">
         <ThemeProvider>
-          <EnvironmentProvider>
-            <TechnicalStateProvider>
-              <MediaProvider>
-                <SmoothScrollProvider>
-                  {children}
-                </SmoothScrollProvider>
-              </MediaProvider>
-            </TechnicalStateProvider>
-          </EnvironmentProvider>
+          <TechnicalStateProvider>
+            <SmoothScrollProvider>
+              {children}
+            </SmoothScrollProvider>
+          </TechnicalStateProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -17,7 +17,6 @@ import { ScrollReveal } from '@/components/motion/ScrollReveal'
 import { StaggerReveal } from '@/components/motion/StaggerReveal'
 import { scaleIn } from '@/lib/animations'
 import { useTechnicalState } from '@/contexts/TechnicalStateContext'
-import { useEnvironment } from '@/contexts/EnvironmentContext'
 
 const technologies = [
   {
@@ -40,19 +39,17 @@ const technologies = [
 
 export function TechnologyStack() {
   const { setActiveSection } = useTechnicalState()
-  const { setEnvironment } = useEnvironment()
   const sectionRef = useRef<HTMLElement>(null)
   const isInView = useInView(sectionRef, { margin: '-20%', once: false })
   
-  // Claim visual ownership and set neutral environment
+  // Claim visual ownership
   useEffect(() => {
     if (isInView) {
       setActiveSection('technology')
-      setEnvironment(null) // Neutral environment
     } else {
       setActiveSection(null)
     }
-  }, [isInView, setActiveSection, setEnvironment])
+  }, [isInView, setActiveSection])
 
   return (
     <section

@@ -9,7 +9,6 @@ import { HowWeBuild } from '@/components/sections/HowWeBuild'
 import { Pricing } from '@/components/sections/Pricing'
 import { Team } from '@/components/sections/Team'
 import { CTA } from '@/components/sections/CTA'
-import { EnvironmentBackground } from '@/components/media/EnvironmentBackground'
 import { SystemCanvas } from '@/components/system/SystemCanvas'
 import { GlobalScrollTracker } from '@/components/system/GlobalScrollTracker'
 import { TubesCursorBackground } from '@/components/background/TubesCursorBackground'
@@ -25,9 +24,6 @@ export default function Home() {
       
       {/* Global Scroll Tracker */}
       <GlobalScrollTracker />
-      
-      {/* Persistent environment - texture layer only */}
-      <EnvironmentBackground />
       
       {/* Content as overlays on the system */}
       <div className="relative z-10">
